@@ -61,28 +61,33 @@ def load_data(filename):
     """
 
     with open(filename) as f:
+        # skip first line
         reader = csv.reader(f)
+        next(reader)
 
         evidence = []
         labels = []
         types = ["int", "float", "int", "float", "int", "float", "float", "float", "float", "float", "month", "int", "int", "int", "int", "visitor", "weekend"]
-        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         for row in reader:
+            evidence_row = []
             for i in range(17):
                 if types[i] == "int":
-                    evidence.append(int(row[i]))
+                    evidence_row.append(int(row[i]))
                 elif types[i] == "float":
-                    evidence.append(float(row[i]))
+                    evidence_row.append(float(row[i]))
                 elif types[i] == "month":
                     # make january 1 rather than 0
-                    evidence.append(months.index(row[i]) + 1)
+                    evidence_row.append(months.index(row[i]) + 1)
                 elif types[i] == "visitor":
-                    evidence.append(1 if row[i] == 'Returning_Visitor' else 0)
+                    evidence_row.append(1 if row[i] == 'Returning_Visitor' else 0)
                 elif types[i] == "weekend":
-                    evidence.append(1 if row[i] is True else 0)
+                    evidence_row.append(1 if row[i] is True else 0)
+
+            evidence.append(evidence_row)
             labels.append(1 if row[17] is True else 0)
 
-    return (evidence, labels)
+    return evidence, labels
 
 
 def train_model(evidence, labels):
