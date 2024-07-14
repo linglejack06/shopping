@@ -78,7 +78,7 @@ def load_data(filename):
                     evidence_row.append(float(row[i]))
                 elif types[i] == "month":
                     # make january 1 rather than 0
-                    evidence_row.append(months.index(row[i]) + 1)
+                    evidence_row.append(months.index(row[i]))
                 elif types[i] == "visitor":
                     evidence_row.append(1 if row[i] == 'Returning_Visitor' else 0)
                 elif types[i] == "weekend":
@@ -115,7 +115,21 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
-    raise NotImplementedError
+    sensitivity, specificity = 0.0, 0.0
+    positive_length, negative_length = 0, 0
+    for prediction, label in zip(predictions, labels):
+        if label == 1:
+            positive_length += 1
+            if prediction == 1:
+                sensitivity += 1
+        if label == 0:
+            negative_length += 1
+            if prediction == 0:
+                specificity += 1
+    sensitivity = sensitivity / positive_length
+    specificity = specificity / negative_length
+
+    return sensitivity, specificity
 
 
 if __name__ == "__main__":
